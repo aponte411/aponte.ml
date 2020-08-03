@@ -45,6 +45,7 @@ iris_target = iris_target.reshape((iris_target.size,))
 
 # [START train-and-save-model]
 # Train the models
+# TODO: move to models module
 svm_classifier = svm.SVC(gamma='auto', verbose=True)
 svm_classifier.fit(iris_data, iris_target)
 # randomf forest
