@@ -1,7 +1,9 @@
 from setuptools import find_packages
 from setuptools import setup
 
-REQUIRED_PACKAGES = []
+REQUIRED_PACKAGES = [
+    "scikit-learn==0.23.1"
+]
 
 setup(
     name='trainer',

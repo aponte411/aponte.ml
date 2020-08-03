@@ -2,7 +2,7 @@
 TRAINING_PACKAGE_PATH=trainer
 MAIN_TRAINER_MODULE=trainer.task
 BUCKET_NAME=model_registry
-JOB_NAME="poc_training_pipeline_$(date +"%Y%m%d_%H%M%S")"
+JOB_NAME=poc_training_pipeline_v0
 JOB_DIR=gs://${BUCKET_NAME}/scikit_learn_job_dir
 REGION=us-central1
 RUNTIME_VERSION=2.1
