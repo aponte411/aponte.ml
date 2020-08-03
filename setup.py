@@ -1,7 +1,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-REQUIRED_PACKAGES = ['some_PyPI_package>=1.0']
+REQUIRED_PACKAGES = []
 
 setup(
     name='trainer',
@@ -9,5 +9,5 @@ setup(
     install_requires=REQUIRED_PACKAGES,
     packages=find_packages(),
     include_package_data=True,
-    description='My training application package.'
+    description='POC training application.'
 )

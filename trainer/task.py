@@ -5,10 +5,10 @@ import subprocess
 import sys
 import pandas as pd
 from sklearn import svm, ensemble
-from sklearn.externals import joblib
+import joblib
 
 # Fill in your Cloud Storage bucket name
-BUCKET_NAME = '<YOUR_BUCKET_NAME>'
+BUCKET_NAME = 'model_registry'
 # [END setup]
 
 
@@ -20,7 +20,7 @@ data_dir = 'gs://cloud-samples-data/ml-engine/iris'
 
 # gsutil outputs everything to stderr so we need to divert it to stdout.
 training_data = os.path.join(data_dir, iris_data_filename)
-training_labels = os.path.joing(data_dir, iris_target_filename)
+training_labels = os.path.join(data_dir, iris_target_filename)
 
 subprocess.check_call(
     ['gsutil', 'cp', training_data, iris_data_filename],
