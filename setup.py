@@ -2,7 +2,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 REQUIRED_PACKAGES = [
-    "scikit-learn==0.23.1"
+    "scikit-learn==0.20.4"
 ]
 
 setup(

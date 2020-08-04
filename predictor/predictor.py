@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 import joblib
-
+from sklearn.externals import joblib
 
 class Predictor():
     """An example Predictor for an AI Platform custom prediction routine."""
