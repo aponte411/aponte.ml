@@ -88,7 +88,8 @@ def main(
     json_path: str,
     version: Optional[str] = None,
 ) -> Any:
-    instances = json.load(json_path)
+    with open(json_path) as f:
+        instances = json.load(json_path)
     try:
         result = predict(
             project,
