@@ -1,3 +1,6 @@
 *.joblib
 *.csv
 __pycache__
+dist
+*.egg-info
+inputs

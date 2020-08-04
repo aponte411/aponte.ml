@@ -1,25 +1,19 @@
-
 import os
-import pickle
 
 import numpy as np
-from sklearn.externals import joblib
+import joblib
 
 
-class Predictor(object):
+class Predictor():
     """An example Predictor for an AI Platform custom prediction routine."""
 
-    def __init__(self, model, preprocessor):
+    def __init__(self, model):
         """Stores artifacts for prediction. Only initialized via `from_path`.
         """
         self._model = model
-        self._preprocessor = preprocessor
 
     def predict(self, instances, **kwargs):
         """Performs custom prediction.
-
-        Preprocesses inputs, then performs prediction using the trained
-        scikit-learn model.
 
         Args:
             instances: A list of prediction input instances.
@@ -30,8 +24,7 @@ class Predictor(object):
             A list of outputs containing the prediction results.
         """
         inputs = np.asarray(instances)
-        preprocessed_inputs = self._preprocessor.preprocess(inputs)
-        outputs = self._model.predict(preprocessed_inputs)
+        outputs = self._model.predict(inputs)
         return outputs.tolist()
 
     @classmethod
@@ -50,11 +43,7 @@ class Predictor(object):
         Returns:
             An instance of `MyPredictor`.
         """
-        model_path = os.path.join(model_dir, 'model.joblib')
+        model_path = os.path.join(model_dir, 'rf-model.joblib')
         model = joblib.load(model_path)
 
-        preprocessor_path = os.path.join(model_dir, 'preprocessor.pkl')
-        with open(preprocessor_path, 'rb') as f:
-            preprocessor = pickle.load(f)
-
-        return cls(model, preprocessor)
+        return cls(model)
