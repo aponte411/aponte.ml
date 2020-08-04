@@ -1,4 +1,5 @@
 .EXPORT_ALL_VARIABLES:
+PROJECT=aponte-ml
 REGION=us-central1
 TRAINING_PACKAGE_PATH=trainer
 MAIN_TRAINER_MODULE=trainer.task
@@ -54,3 +55,10 @@ predict:
 		--model ${MODEL_NAME} \
 		--version ${MODEL_VERSION} \
 		--json-instances ${INFERENCE_INPUT}
+
+curl:
+	curl --silent \
+		-H "Authorization: Bearer ${ACCESS_TOKEN}" \
+		-H "Content-Type: application/json" \
+		-X POST https://ml.googleapis.com/v1/projects/${PROJECT}/models/${MODEL_NAME}/versions/${MODEL_VERSION}:predict \
+		-d @inputs/curl_input.json
