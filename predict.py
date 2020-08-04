@@ -78,7 +78,17 @@ def predict_examples(project,
 
     return response['predictions']
 
-
+def main(project, model, json_path, version=None):
+    instances = json.load(json_path)
+    try:
+        result = predict_json(
+            project,
+            model,
+            instances,
+            version,
+        )
+    except RuntimeError as e:
+        raise e
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
