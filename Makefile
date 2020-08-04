@@ -16,6 +16,7 @@ MODEL_DIRECTORY=gs://${BUCKET_NAME}/iris_20200804_010538/
 INFERENCE_URI=gs://${BUCKET_NAME}/inference/predictor-0.1.tar.gz
 PREDICTION_CLASS=predictor.Predictor
 INFERENCE_INPUT=inputs/inference_input.json
+ACCESS_TOKEN=${gcloud auth application-default print-access-token}
 
 test_local:
 	gcloud ai-platform local train \
