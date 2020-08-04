@@ -14,6 +14,7 @@ MODEL_VERSION=v1
 MODEL_DIRECTORY=gs://${BUCKET_NAME}/iris_20200804_010538/
 INFERENCE_URI=gs://${BUCKET_NAME}/inference/predictor-0.1.tar.gz
 PREDICTION_CLASS=predictor.Predictor
+INFERENCE_INPUT=inputs/inference_input.json
 
 test_local:
 	gcloud ai-platform local train \
@@ -48,4 +49,8 @@ create_version:
 		--package-uris ${INFERENCE_URI} \
 		--prediction-class ${PREDICTION_CLASS}
 
-
+predict:
+	gcloud ai-platform predict \
+		--model ${MODEL_NAME} \
+		--version ${MODEL_VERSION} \
+		--json-instances ${INFERENCE_INPUT}
