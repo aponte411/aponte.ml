@@ -1,4 +1,4 @@
-"""Examples of using AI Platform's online prediction service."""
+"""AI Platform's online prediction service."""
 import argparse
 import json
 from typing import Any, Optional, List, Dict
@@ -29,58 +29,19 @@ def predict(
     # To authenticate set the environment variable
     # GOOGLE_APPLICATION_CREDENTIALS=<path_to_service_account_file>
     service = googleapiclient.discovery.build('ml', 'v1')
-    name = 'projects/{}/models/{}'.format(project, model)
-
+    name = f'projects/{project}/models/{model}'
     if version is not None:
-        name += '/versions/{}'.format(version)
+        name += f'/versions/{version}'
 
     response = service.projects().predict(
         name=name,
-        body={'instances': instances}
+        body={'instances': instances},
     ).execute()
 
     if 'error' in response:
         raise RuntimeError(response['error'])
-
     return response['predictions']
 
-
-def predict_examples(project,
-                     model,
-                     example_bytes_list,
-                     version=None):
-    """Send protocol buffer data to a deployed model for prediction.
-
-    Args:
-        project (str): project where the AI Platform Model is deployed.
-        model (str): model name.
-        example_bytes_list ([str]): A list of bytestrings representing
-            serialized tf.train.Example protocol buffers. The contents of this
-            protocol buffer will change depending on the signature of your
-            deployed model.
-        version: str, version of the model to target.
-    Returns:
-        Mapping[str: any]: dictionary of prediction results defined by the
-            model.
-    """
-    service = googleapiclient.discovery.build('ml', 'v1')
-    name = 'projects/{}/models/{}'.format(project, model)
-
-    if version is not None:
-        name += '/versions/{}'.format(version)
-
-    response = service.projects().predict(
-        name=name,
-        body={'instances': [
-            {'b64': base64.b64encode(example_bytes).decode('utf-8')}
-            for example_bytes in example_bytes_list
-        ]}
-    ).execute()
-
-    if 'error' in response:
-        raise RuntimeError(response['error'])
-
-    return response['predictions']
 
 def main(
     project: str,
