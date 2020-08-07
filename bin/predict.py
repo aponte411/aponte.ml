@@ -1,9 +1,9 @@
 """Examples of using AI Platform's online prediction service."""
 import argparse
 import json
+from typing import Optional
 
 import googleapiclient.discovery
-import six
 
 
 def predict_json(project, model, instances, version=None):
@@ -78,8 +78,16 @@ def predict_examples(project,
 
     return response['predictions']
 
-def main(project, model, json_path, version=None):
-    instances = json.load(json_path)
+def main(
+    project: str,
+    model: str,
+    samples: str,
+    version: Optional[str] = None,
+):
+    instances = []
+    with open(samples) as f:
+        for line in f:
+            instances.append(json.load(line))
     try:
         result = predict_json(
             project,
@@ -87,6 +95,7 @@ def main(project, model, json_path, version=None):
             instances,
             version,
         )
+        print(result)
     except RuntimeError as e:
         raise e
 
@@ -105,6 +114,12 @@ if __name__ == '__main__':
         required=True
     )
     parser.add_argument(
+        '--samples',
+        help='Path to txt file containing samples',
+        type=str,
+        required=True,
+    )
+    parser.add_argument(
         '--version',
         help='Name of the version.',
         type=str
@@ -113,5 +128,6 @@ if __name__ == '__main__':
     main(
         args.project,
         args.model,
+        args.samples,
         version=args.version,
     )

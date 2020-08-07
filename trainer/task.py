@@ -7,28 +7,21 @@ import pandas as pd
 from sklearn import svm, ensemble
 from sklearn.externals import joblib
 
+from features import download_data
+
 # Fill in your Cloud Storage bucket name
 BUCKET_NAME = 'model_registry'
-# [END setup]
-
 
 # [START download-data]
-# TODO: separate into features module
 iris_data_filename = 'iris_data.csv'
 iris_target_filename = 'iris_target.csv'
 data_dir = 'gs://cloud-samples-data/ml-engine/iris'
-
-# gsutil outputs everything to stderr so we need to divert it to stdout.
 training_data = os.path.join(data_dir, iris_data_filename)
 training_labels = os.path.join(data_dir, iris_target_filename)
 
-subprocess.check_call(
-    ['gsutil', 'cp', training_data, iris_data_filename],
-    stderr=sys.stdout,
-)
-subprocess.check_call(
-    ['gsutil', 'cp', training_labels, iris_target_filename],
-    stderr=sys.stdout,
+download_data(
+    inputs=[training_data, training_labels],
+    outputs=[iris_data_filename, iris_target_filename],
 )
 # [END download-data]
 
