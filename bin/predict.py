@@ -1,7 +1,7 @@
 """Examples of using AI Platform's online prediction service."""
 import argparse
 import json
-from typing import Mapping, Any, Optional
+from typing import Any, Optional, List, Dict
 
 import googleapiclient.discovery
 
@@ -85,11 +85,11 @@ def predict_examples(project,
 def main(
     project: str,
     model: str,
-    input_path: str,
+    samples: str,
     version: Optional[str] = None,
 ) -> Any:
     instances = []
-    with open(input_path) as f:
+    with open(samples) as f:
         for line in f:
             instances.append(json.loads(line))
     try:
@@ -129,15 +129,10 @@ if __name__ == '__main__':
         help='Name of the version.',
         type=str
     )
-    parser.add_argument(
-        '--input-path',
-        help='Path to live inference inputs',
-        type=str,
-    )
     args = parser.parse_args()
     main(
         project=args.project,
         model=args.model,
-        input_path=args.input_path,
+        samples=args.samples,
         version=args.version,
     )

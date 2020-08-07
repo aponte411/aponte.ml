@@ -51,12 +51,17 @@ create_version:
 		--package-uris ${INFERENCE_URI} \
 		--prediction-class ${PREDICTION_CLASS}
 
-predict:
+predict-ai:
 	gcloud ai-platform predict \
 		--model ${MODEL_NAME} \
 		--version ${MODEL_VERSION} \
 		--json-instances ${INFERENCE_INPUT}
 
+predict:
+	PYTHONPATH=. python bin/predict.py \
+			   --project ${PROJECT} \
+			   --model ${MODEL_NAME} \
+			   --samples ${INFERENCE_INPUT}
 curl:
 	curl --silent \
 		-H "Authorization: Bearer ${ACCESS_TOKEN}" \
