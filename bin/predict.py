@@ -1,12 +1,16 @@
 """Examples of using AI Platform's online prediction service."""
 import argparse
 import json
-from typing import Optional
+from typing import Mapping, Any, Optional
 
 import googleapiclient.discovery
 
 
-def predict_json(project, model, instances, version=None):
+def predict(
+    project: str,
+    model: str,
+    instances: List[str],
+    version: Optional[str] = None) -> Dict[str, Any]:
     """Send json data to a deployed model for prediction.
 
     Args:
@@ -81,21 +85,22 @@ def predict_examples(project,
 def main(
     project: str,
     model: str,
-    samples: str,
+    input_path: str,
     version: Optional[str] = None,
-):
+) -> Any:
     instances = []
-    with open(samples) as f:
+    with open(input_path) as f:
         for line in f:
-            instances.append(json.load(line))
+            instances.append(json.loads(line))
     try:
-        result = predict_json(
+        result = predict(
             project,
             model,
             instances,
             version,
         )
         print(result)
+        return result
     except RuntimeError as e:
         raise e
 
@@ -124,10 +129,15 @@ if __name__ == '__main__':
         help='Name of the version.',
         type=str
     )
+    parser.add_argument(
+        '--input-path',
+        help='Path to live inference inputs',
+        type=str,
+    )
     args = parser.parse_args()
     main(
-        args.project,
-        args.model,
-        args.samples,
+        project=args.project,
+        model=args.model,
+        input_path=args.input_path,
         version=args.version,
     )
