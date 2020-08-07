@@ -42,7 +42,7 @@ iris_target = iris_target.reshape((iris_target.size,))
 svm_classifier = svm.SVC(gamma='auto', verbose=True)
 svm_classifier.fit(iris_data, iris_target)
 # randomf forest
-rf_classifier = ensemble.RandomForestClassifier()
+rf_classifier = ensemble.RandomForestClassifier(verbose=1)
 rf_classifier.fit(iris_data, iris_target)
 
 # Export the classifier to a file
