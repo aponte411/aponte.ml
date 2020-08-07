@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn import svm, ensemble
 from sklearn.externals import joblib
 
-from features import download_data
+from .features import download_data
 
 # Fill in your Cloud Storage bucket name
 BUCKET_NAME = 'model_registry'
