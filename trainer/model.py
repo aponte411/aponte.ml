@@ -1,0 +1,95 @@
+import datetime
+import subprocess
+import pickle
+
+import pandas as pd
+from sklearn.external import joblib
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer, make_column_transformer
+from sklearn.preprocessing import FunctionTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+
+# TODO: add logger
+class Model():
+    def __init__(
+        self,
+        name: str,
+        model_dir: str,
+        format: str = 'joblib',
+    ):
+        self._name = name
+        self._model_dir = model_dir
+        self._format = format
+        self._model = None
+
+    def save(self) -> None:
+        """Serialize training artifact."""
+        if self.format == 'pkl':
+            with open(self._model_dir, 'wb') as f:
+                pickle.dump(self._model, f)
+        else:
+            joblib.dump(self._model, self._model_dir)
+
+    def load(self) -> None:
+        """Load training artifact into memory."""
+        if self.format == 'pkl':
+            with open(self._model_dir, 'rb') as f:
+                self._model = pickle.load(f)
+        else:
+            self._model = joblib.load(self._model_dir)
+
+    def load_from_gcs(self):
+        pass
+
+    def push_to_gcs(self):
+        pass
+
+
+# TODO: move helper functions elsewhere
+
+def impute_string(X):
+    return X.fillna("")
+
+class TrainingPipeline(Model):
+    def __init__(self, name: str, model_dir: str, format: str):
+        super().__init__(name, model_dir, format)
+        self._model = self._build_pipeline()
+
+    def _build_pipeline(self):
+        """Build sklearn pipeline with preprocessing and training"""
+        # impute missing values and transform
+        text_features = 'overview'
+        text_transformer = Pipeline(steps=[
+                ('imputer', FunctionTransformer(impute_string)),
+                ('tfidf', TfidfVectorizer(stop_words='english'))
+            ]
+        )
+        preprocessor = ColumnTransformer(
+            transformers=[('text', text_transformer, text_features)]
+        )
+        # Append classifier to preprocessing pipeline.
+        # Now we have a full prediction pipeline.
+        #clf = Pipeline(steps=[
+        #        ('preprocessor', preprocessor),
+        #        ('classifier', LogisticRegression())
+        #])
+        self._model = preprocessor
+        print('Loaded model into memory')
+
+    def train(self, X: pd.DataFrame, y: pd.Series):
+        print('Starting training pipeline')
+        if self._model is None:
+            raise FileNotFoundError('Training artifact is not loaded into memory, run load() or train')
+        self._model.fit(X, y)
+        assert self._model is not None
+        print('Training complete!')
+
+    def predict(self, X: pd.DataFrame):
+        print('Starting inference')
+        assert self._model is None
+        predictions = self._model.predict(X)
+        assert predictions is not None
+        return predictions
+
+
