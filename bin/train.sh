@@ -19,14 +19,14 @@ TRAINER_MODULE=$PACKAGE_PATH.task
 REGION=us-central1
 
 if [ "$RUN_TYPE" = 'hptuning'  ]; then
-    CONFIG_FILE=config/hptuning_config.yaml
+    CONFIG_FILE=config/hptuning.yaml
 else  # Assume `train`
     CONFIG_FILE=config/config.yaml
 fi
 
 # Specify arguments for remote (AI Platform) or local (on-premise) execution
 echo "$RUN_ENV"
-if [ "$RUN_ENV" = 'remote'  ]; then
+if [ "$RUN_ENV" = 'remote' ]; then
     RUN_ENV_ARGS="jobs submit training $JOB_NAME \
                     --region $REGION \
                     --config $CONFIG_FILE \
