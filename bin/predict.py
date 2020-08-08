@@ -51,14 +51,14 @@ def main(
 ) -> Any:
     instances = []
     with open(samples) as f:
-        for line in f:
-            instances.append(json.loads(line))
+        for sample in f:
+            instances.append(json.loads(sample))
     try:
         result = predict(
-            project,
-            model,
-            instances,
-            version,
+            project=project,
+            model=model,
+            instances=instances,
+            version=version,
         )
         print(result)
         return result
