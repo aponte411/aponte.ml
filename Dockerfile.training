@@ -1,0 +1,13 @@
+FROM python:3.7
+
+COPY requirements.txt /root/requirements.txt
+RUN pip install -r /root/requirements.txt
+
+COPY /trainer /root/trainer
+COPY /bin/train.py /root/bin/train.py
+
+WORKDIR /root
+
+ENV PYTHONPATH=.
+# TODO: fix to have credentials and pull data feauture-file
+ENTRYPOINT [ "python", "bin/train.py"]

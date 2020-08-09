@@ -68,3 +68,6 @@ curl:
 		-H "Content-Type: application/json" \
 		-X POST https://ml.googleapis.com/v1/projects/${PROJECT}/models/${MODEL_NAME}/versions/${MODEL_VERSION}:predict \
 		-d @inputs/curl_input.json
+
+build_trainer_container:
+	docker build --pull --rm -f "Dockerfile.training" -t aponteml:v0 "."
