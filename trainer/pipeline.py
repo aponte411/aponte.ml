@@ -21,44 +21,50 @@ class Model():
     def __init__(
         self,
         name: str,
-        training_artifact: str,
+        model_dir: str,
+        task_name: str = 'movies',
         format: str = 'joblib',
     ):
         self._name = name
-        self._local_training_artifact = training_artifact
+        self._model_dir = model_dir
+        self._task_name = task_name
         self._format = format
         self._model = None
-        self._run_id = datetime.datetime.now().strftime(f'{self._name}_%Y%m%d_%H%M%S')
+        self._run_id = datetime.datetime.now().strftime(f'{self._task_name}_%Y%m%d_%H%M%S')
         self._gcs_model_path = os.path.join(
             BUCKET_NAME,
             self._run_id,
-            self._local_training_artifact,
+            self._model_dir,
         )
 
 
     def save(self) -> None:
         """Serialize training artifact."""
         if self.format == 'pkl':
-            with open(self._local_training_artifact, 'wb') as f:
+            with open(self._model_dir, 'wb') as f:
                 pickle.dump(self._model, f)
         else:
-            joblib.dump(self._model, self._local_training_artifact)
+            joblib.dump(self._model, self._model_dir)
 
     def load(self) -> None:
         """Load training artifact into memory."""
         if self.format == 'pkl':
-            with open(self._local_training_artifact, 'rb') as f:
+            with open(self._model_dir, 'rb') as f:
                 self._model = pickle.load(f)
         else:
-            self._model = joblib.load(self._local_training_artifact)
+            self._model = joblib.load(self._model_dir)
 
     def load_from_gcs(self):
         """Download training artifact from GCS bucket."""
         pass
 
-    def push_to_gcs(self) -> None:
-        """Push training artifact to GCS bucket."""
-        cmd = ['gsutil','cp', self._local_training_artifact, self._gcs_model_path,]
+    def push_to_gcs(self, task_name: str = 'movies') -> None:
+        """Push training artifact to GCS bucket.
+
+        Args:
+            task_name (str): TBD
+        """
+        cmd = ['gsutil','cp', self._model_dir, self._gcs_model_path,]
         subprocess.check_call(
             cmd, stderr=sys.stdout,
         )
@@ -72,8 +78,8 @@ def impute_string(X: pd.DataFrame) -> pd.DataFrame:
 
 class TrainingPipeline(Model):
     """Training pipeline."""
-    def __init__(self, name: str, training_artifact: str, format: str):
-        super().__init__(name, training_artifact, format)
+    def __init__(self, name: str, model_dir: str, format: str):
+        super().__init__(name, model_dir, format)
         self._model = self._build_pipeline()
         # self._config = pass training config
 
@@ -102,13 +108,15 @@ class TrainingPipeline(Model):
 
     def train(self, X: pd.DataFrame, y: pd.Series):
         print('Starting training pipeline')
-        self._model.fit(X)
+        if self._model is None:
+            raise FileNotFoundError('Training artifact is not loaded into memory, run load() or train')
+        self._model.fit(X, y)
         assert self._model is not None
         print('Training complete!')
 
     def transform(self, X: pd.DataFrame):
         print('Starting transform')
-        results = self._model.transform(X)
+        results = self._model.fit_transform(X)
         assert results is not None
         return results
 
