@@ -38,5 +38,4 @@ def timing(func: Callable) -> Callable:
 def impute_string(X: pd.DataFrame) -> pd.DataFrame:
     """Impute dataframe with empty string."""
     imputed = X.fillna("")
-    print(imputed)
     return imputed

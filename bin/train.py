@@ -15,7 +15,7 @@ def main(args):
     # )
 
     # Load data into pandas, then use `.values` to get NumPy arrays
-    X = pd.read_csv(args.feature_file)
+    X = pd.read_csv(args.feature_file, low_memory=True)
     model = TrainingPipeline(
         name='movies',
         model_path=args.model_path,
